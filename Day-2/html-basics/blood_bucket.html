@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Blood Bucket</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-red-100 to-white min-h-screen">
+
+<!-- LOGIN PAGE -->
+<section id="loginPage" class="min-h-screen flex items-center justify-center">
+  <div class="bg-white p-10 rounded-2xl shadow-xl w-96 text-center">
+    <div class="text-6xl mb-4">🩸</div>
+    <h1 class="text-2xl font-bold text-red-600">Blood Bucket</h1>
+    <p class="text-gray-500 mb-6">Who are you?</p>
+
+    <select id="roleSelect" class="w-full border p-3 rounded mb-4">
+      <option value="">Select Role</option>
+      <option value="admin">Admin</option>
+      <option value="hospital">Hospital</option>
+      <option value="donor">Donor</option>
+    </select>
+
+    <button onclick="enterSystem()" 
+      class="bg-red-600 text-white w-full py-3 rounded-xl hover:bg-red-700 transition">
+      Enter
+    </button>
+  </div>
+</section>
+
+<!-- NAVBAR -->
+<nav id="navbar" class="hidden bg-red-600 text-white p-4 flex justify-between">
+  <h1 class="font-bold">🩸 Blood Bucket</h1>
+  <button onclick="logout()" class="bg-white text-red-600 px-3 py-1 rounded">
+    Logout
+  </button>
+</nav>
+
+<!-- ADMIN PAGE -->
+<section id="admin" class="hidden p-10">
+  <h2 class="text-3xl font-bold mb-6">Admin Dashboard</h2>
+
+  <div class="grid grid-cols-3 gap-6">
+    <div class="bg-white p-6 rounded shadow">
+      <h3>Total Orders</h3>
+      <p id="totalOrders" class="text-3xl font-bold text-red-600">0</p>
+    </div>
+    <div class="bg-white p-6 rounded shadow">
+      <h3>Total Donors</h3>
+      <p class="text-3xl font-bold">32</p>
+    </div>
+    <div class="bg-white p-6 rounded shadow">
+      <h3>Total Hospitals</h3>
+      <p class="text-3xl font-bold">10</p>
+    </div>
+  </div>
+
+  <div class="bg-white p-6 rounded shadow mt-6">
+    <h3 class="font-bold mb-2">Blood Availability</h3>
+    <table class="w-full border text-center">
+      <tr class="bg-gray-200">
+        <th class="border p-2">Blood Type</th>
+        <th class="border p-2">Units</th>
+      </tr>
+      <tr><td class="border p-2">A+</td><td class="border p-2">12</td></tr>
+      <tr><td class="border p-2">B+</td><td class="border p-2">8</td></tr>
+      <tr><td class="border p-2">O+</td><td class="border p-2">20</td></tr>
+      <tr><td class="border p-2">AB+</td><td class="border p-2">5</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- HOSPITAL PAGE -->
+<section id="hospital" class="hidden p-10">
+  <h2 class="text-3xl font-bold mb-6">Hospital Dashboard</h2>
+
+  <div class="bg-white p-6 rounded shadow max-w-md">
+    <h3 class="font-bold mb-2">Place Blood Order</h3>
+    <select id="hBlood" class="w-full border p-2 mb-2">
+      <option>A+</option><option>A-</option>
+      <option>B+</option><option>B-</option>
+      <option>AB+</option><option>AB-</option>
+      <option>O+</option><option>O-</option>
+    </select>
+    <input id="hUnits" type="number" placeholder="Units" 
+      class="w-full border p-2 mb-2">
+    <button onclick="placeOrder()" 
+      class="bg-red-600 text-white w-full py-2 rounded">
+      Place Order
+    </button>
+  </div>
+
+  <div class="bg-white p-6 rounded shadow mt-6">
+    <h3 class="font-bold mb-2">Orders Placed</h3>
+    <table class="w-full border text-center">
+      <thead class="bg-gray-200">
+        <tr>
+          <th class="border p-2">Order ID</th>
+          <th class="border p-2">Blood</th>
+          <th class="border p-2">Units</th>
+        </tr>
+      </thead>
+      <tbody id="orderTable"></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- DONOR PAGE -->
+<section id="donor" class="hidden p-10">
+  <h2 class="text-3xl font-bold mb-6">Donor Dashboard</h2>
+
+  <div class="bg-white p-6 rounded shadow max-w-md">
+    <h3 class="font-bold mb-2">Check Eligibility</h3>
+    <input id="dAge" type="number" placeholder="Age" 
+      class="w-full border p-2 mb-2">
+    <input id="dWeight" type="number" placeholder="Weight (kg)" 
+      class="w-full border p-2 mb-2">
+    <button onclick="checkEligibility()" 
+      class="bg-red-600 text-white w-full py-2 rounded">
+      Check
+    </button>
+    <p id="eligibilityResult" class="mt-3 font-bold"></p>
+  </div>
+
+  <div class="bg-white p-6 rounded shadow mt-6 max-w-md">
+    <h3 class="font-bold mb-2">Eligibility Criteria</h3>
+    <ul class="list-disc ml-5 text-sm">
+      <li>Age 18–60 years</li>
+      <li>Weight ≥ 50 kg</li>
+      <li>No major diseases</li>
+      <li>3 months gap between donations</li>
+      <li>No alcohol in last 24 hours</li>
+    </ul>
+  </div>
+</section>
+
+<script>
+  let orders = 0;
+
+  function enterSystem() {
+    let role = roleSelect.value;
+    if (!role) return alert("Please select a role");
+
+    loginPage.classList.add("hidden");
+    navbar.classList.remove("hidden");
+    document.getElementById(role).classList.remove("hidden");
+  }
+
+  function logout() {
+    ["admin","hospital","donor"].forEach(id=>{
+      document.getElementById(id).classList.add("hidden");
+    });
+    navbar.classList.add("hidden");
+    loginPage.classList.remove("hidden");
+  }
+
+  function placeOrder() {
+    let blood = hBlood.value;
+    let units = hUnits.value;
+    if (!units) return alert("Enter units");
+
+    orders++;
+    orderTable.innerHTML += `
+      <tr>
+        <td class="border p-2">${orders}</td>
+        <td class="border p-2">${blood}</td>
+        <td class="border p-2">${units}</td>
+      </tr>
+    `;
+    totalOrders.innerText = orders;
+    hUnits.value = "";
+  }
+
+  function checkEligibility() {
+    let age = dAge.value;
+    let weight = dWeight.value;
+
+    if (age >= 18 && age <= 60 && weight >= 50) {
+      eligibilityResult.innerText = "✅ You are eligible to donate blood";
+      eligibilityResult.className = "text-green-600 font-bold";
+    } else {
+      eligibilityResult.innerText = "❌ You are not eligible to donate";
+      eligibilityResult.className = "text-red-600 font-bold";
+    }
+  }
+</script>
+
+</body>
+</html>
