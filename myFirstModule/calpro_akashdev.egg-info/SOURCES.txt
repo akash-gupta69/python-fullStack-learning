@@ -1,0 +1,8 @@
+README.md
+pyproject.toml
+calPro/__init__.py
+calPro/calc.py
+calpro_akashdev.egg-info/PKG-INFO
+calpro_akashdev.egg-info/SOURCES.txt
+calpro_akashdev.egg-info/dependency_links.txt
+calpro_akashdev.egg-info/top_level.txt
